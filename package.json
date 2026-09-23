@@ -1,0 +1,83 @@
+{
+  "name": "todoplan",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A local-first desktop Todo and review application",
+  "main": "dist-electron/main/index.js",
+  "scripts": {
+    "postinstall": "node scripts/patch-vite-plugin-electron.mjs",
+    "predev": "node scripts/patch-vite-plugin-electron.mjs",
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "start": "electron .",
+    "test": "vitest run",
+    "package:windows": "powershell -ExecutionPolicy Bypass -File scripts/build-windows.ps1",
+    "package:mac": "bash scripts/build-mac.sh"
+  },
+  "dependencies": {
+    "adm-zip": "^0.6.1",
+    "dayjs": "^1.11.13",
+    "pinia": "^3.0.3",
+    "vue": "^3.5.22",
+    "vue-router": "^4.6.3"
+  },
+  "devDependencies": {
+    "@types/adm-zip": "^0.5.8",
+    "@types/node": "^22.10.5",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "electron": "34.5.8",
+    "electron-builder": "^26.15.3",
+    "typescript": "^5.7.3",
+    "vite": "^7.1.9",
+    "vite-plugin-electron": "^0.29.0",
+    "vite-plugin-electron-renderer": "^0.14.6",
+    "vitest": "^3.2.4",
+    "vue-tsc": "^3.1.1"
+  },
+  "build": {
+    "appId": "com.todoplan.desktop",
+    "productName": "TodoPlan",
+    "asar": true,
+    "directories": {
+      "output": "out"
+    },
+    "files": [
+      "dist/renderer/**/*",
+      "dist-electron/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "build/icon.png",
+        "to": "icon.png"
+      }
+    ],
+    "win": {
+      "icon": "build/icon.png",
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "nsis": {
+      "artifactName": "${productName}-Setup-${version}-${arch}.${ext}",
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "portable": {
+      "artifactName": "${productName}-Portable-${version}-${arch}.${ext}"
+    },
+    "mac": {
+      "icon": "build/icon.png",
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "category": "public.app-category.productivity",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    }
+  }
+}
