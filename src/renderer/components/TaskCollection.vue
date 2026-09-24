@@ -11,7 +11,7 @@ const store = useTaskStore()
 const completing = ref<Task>()
 
 function toggle(task: Task): void { if (task.status === 'completed') void store.uncomplete(task.id); else completing.value = task }
-async function complete(note?: string): Promise<void> { if (!completing.value) return; await store.complete(completing.value.id, note); completing.value = undefined }
+async function complete(note?: string, completedAt?: string): Promise<void> { if (!completing.value) return; await store.complete(completing.value.id, note, completedAt); completing.value = undefined }
 async function remove(task: Task): Promise<void> { if (window.confirm(`确定删除“${task.title}”吗？其直接子任务也会被删除。`)) await store.remove(task.id) }
 </script>
 

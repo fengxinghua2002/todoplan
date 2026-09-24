@@ -19,7 +19,7 @@ export const useTaskStore = defineStore('tasks', () => {
   async function create(input: TaskInput): Promise<void> { await window.todoApi.createTask(input); await load() }
   async function update(id: string, input: TaskUpdate): Promise<void> { await window.todoApi.updateTask(id, input); await load() }
   async function remove(id: string): Promise<void> { await window.todoApi.deleteTask(id); await load() }
-  async function complete(id: string, note?: string): Promise<void> { await window.todoApi.completeTask(id, note); await load() }
+  async function complete(id: string, note?: string, completedAt?: string): Promise<void> { await window.todoApi.completeTask(id, note, completedAt); await load() }
   async function uncomplete(id: string): Promise<void> { await window.todoApi.uncompleteTask(id); await load() }
   function childrenOf(parentId: string): Task[] { return tasks.value.filter((task) => task.parentId === parentId).sort((a, b) => a.sortOrder - b.sortOrder) }
 

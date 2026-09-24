@@ -19,9 +19,9 @@ onMounted(async () => { await Promise.all([categories.load(), settings.load()]) 
       <span>TodoPlan</span>
     </header>
     <aside class="sidebar">
-      <div class="brand"><span class="brand-mark">T</span><span class="brand-label">TodoPlan</span></div>
+      <div class="brand"><span class="brand-mark">✓</span><span class="brand-label">TodoPlan</span></div>
       <nav class="nav-list">
-        <RouterLink to="/today" title="今天"><span class="nav-icon">☀</span><span class="nav-label">今天</span></RouterLink>
+        <RouterLink to="/today" title="今天"><span class="nav-icon">☼</span><span class="nav-label">今天</span></RouterLink>
         <RouterLink to="/calendar" title="日历"><span class="nav-icon">▦</span><span class="nav-label">日历</span></RouterLink>
         <RouterLink
           to="/todo"
@@ -29,7 +29,7 @@ onMounted(async () => { await Promise.all([categories.load(), settings.load()]) 
           active-class="nav-route-match"
           :class="{ 'router-link-active': route.path === '/todo' && !route.query.category }"
         ><span class="nav-icon">✓</span><span class="nav-label">Todo</span></RouterLink>
-        <RouterLink to="/completed" title="已完成"><span class="nav-icon">◉</span><span class="nav-label">已完成</span></RouterLink>
+        <RouterLink to="/completed" title="已完成"><span class="nav-icon">○</span><span class="nav-label">已完成</span></RouterLink>
         <RouterLink to="/focus" title="专注"><span class="nav-icon">◷</span><span class="nav-label">专注</span></RouterLink>
       </nav>
       <div class="nav-section">
