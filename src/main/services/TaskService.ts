@@ -35,6 +35,14 @@ export class TaskService {
     const cleaned: Partial<Task> = { ...rest }
     if (input.title !== undefined) cleaned.title = input.title.trim()
     if ('parentId' in input) cleaned.parentId = parentId ?? undefined
+    if (input.completedAt !== undefined) {
+      if (tasks[index].status !== 'completed') throw new Error('只能修改已完成任务的完成时间')
+      cleaned.completedAt = this.completionTimestamp(input.completedAt)
+    }
+    if (input.completionNote !== undefined) {
+      if (tasks[index].status !== 'completed') throw new Error('只能修改已完成任务的完成备注')
+      cleaned.completionNote = input.completionNote.trim() || undefined
+    }
     tasks[index] = { ...tasks[index], ...cleaned, updatedAt: new Date().toISOString() }
     await this.storage.saveTasks(tasks)
     return tasks[index]
@@ -46,13 +54,13 @@ export class TaskService {
     await this.storage.saveTasks(tasks.filter((task) => task.id !== id && task.parentId !== id))
   }
 
-  async complete(id: string, completionNote?: string): Promise<Task> {
+  async complete(id: string, completionNote?: string, completedAt?: string): Promise<Task> {
     const tasks = await this.storage.loadTasks()
     const task = this.requireTask(tasks, id)
     task.status = 'completed'
-    task.completedAt = new Date().toISOString()
+    task.completedAt = this.completionTimestamp(completedAt ?? new Date().toISOString())
     task.completionNote = completionNote?.trim() || undefined
-    task.updatedAt = task.completedAt
+    task.updatedAt = new Date().toISOString()
     await this.storage.saveTasks(tasks)
     return task
   }
@@ -72,6 +80,13 @@ export class TaskService {
     const task = tasks.find((item) => item.id === id)
     if (!task) throw new Error('任务不存在')
     return task
+  }
+
+  private completionTimestamp(value: string): string {
+    const date = new Date(value)
+    if (Number.isNaN(date.getTime())) throw new Error('请选择有效的完成时间')
+    if (date.getTime() > Date.now()) throw new Error('完成时间不能晚于现在')
+    return date.toISOString()
   }
 
   private optionalFields(input: TaskInput): Partial<Task> {

@@ -29,7 +29,7 @@ export function registerIpc(services: Services): void {
   ipcMain.handle(IPC_CHANNELS.tasks.create, (_event, input: TaskInput) => services.tasks.create(input))
   ipcMain.handle(IPC_CHANNELS.tasks.update, (_event, id: string, input: TaskUpdate) => services.tasks.update(id, input))
   ipcMain.handle(IPC_CHANNELS.tasks.delete, (_event, id: string) => services.tasks.delete(id))
-  ipcMain.handle(IPC_CHANNELS.tasks.complete, (_event, id: string, note?: string) => services.tasks.complete(id, note))
+  ipcMain.handle(IPC_CHANNELS.tasks.complete, (_event, id: string, note?: string, completedAt?: string) => services.tasks.complete(id, note, completedAt))
   ipcMain.handle(IPC_CHANNELS.tasks.uncomplete, (_event, id: string) => services.tasks.uncomplete(id))
 
   ipcMain.handle(IPC_CHANNELS.categories.getAll, () => services.categories.getAll())

@@ -56,7 +56,7 @@ function selectDate(date: string, inCurrentMonth: boolean): void {
 }
 
 function categoryColor(categoryId: string): string {
-  return categoryStore.byId(categoryId)?.color ?? '#a8adba'
+  return categoryStore.byId(categoryId)?.color ?? '#8e8e93'
 }
 </script>
 

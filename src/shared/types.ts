@@ -32,7 +32,11 @@ export interface TaskInput {
   sortOrder?: number
 }
 
-export type TaskUpdate = Partial<Omit<TaskInput, 'parentId'>> & { parentId?: string | null }
+export type TaskUpdate = Partial<Omit<TaskInput, 'parentId'>> & {
+  parentId?: string | null
+  completedAt?: string
+  completionNote?: string
+}
 
 export interface Category {
   id: string
@@ -182,7 +186,7 @@ export interface TodoApi {
   createTask(input: TaskInput): Promise<Task>
   updateTask(id: string, input: TaskUpdate): Promise<Task>
   deleteTask(id: string): Promise<void>
-  completeTask(id: string, completionNote?: string): Promise<Task>
+  completeTask(id: string, completionNote?: string, completedAt?: string): Promise<Task>
   uncompleteTask(id: string): Promise<Task>
   getCategories(): Promise<Category[]>
   createCategory(input: CategoryInput): Promise<Category>

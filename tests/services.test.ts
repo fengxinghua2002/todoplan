@@ -60,6 +60,27 @@ describe('local-first business flow', () => {
     expect(report.markdown).toContain('周、月、年统计均已验证')
   })
 
+  it('uses the actual completion time when recording or correcting a completed task', async () => {
+    const { tasks, statistics, reports } = await fixture()
+    const yesterday = dayjs().subtract(1, 'day').hour(12).minute(30).second(0).millisecond(0)
+    const task = await tasks.create({ title: '补记昨天完成的任务', priority: 'medium' })
+    const completed = await tasks.complete(task.id, '昨天实际完成', yesterday.toISOString())
+    expect(completed.completedAt).toBe(yesterday.toISOString())
+    expect(dayjs(completed.updatedAt).isSame(dayjs(), 'day')).toBe(true)
+
+    const corrected = yesterday.subtract(1, 'hour')
+    const edited = await tasks.update(task.id, { completedAt: corrected.toISOString(), completionNote: '修正完成时间' })
+    expect(edited.completedAt).toBe(corrected.toISOString())
+    expect(edited.completionNote).toBe('修正完成时间')
+
+    const result = await statistics.get({ type: 'week', anchorDate: yesterday.format('YYYY-MM-DD') })
+    expect(result.tasks.some((item) => item.id === task.id)).toBe(true)
+    const report = await reports.generate({ type: 'week', startDate: yesterday.format('YYYY-MM-DD'), endDate: yesterday.format('YYYY-MM-DD') })
+    expect(report.markdown).toContain(task.title)
+
+    await expect(tasks.update(task.id, { completedAt: dayjs().add(1, 'day').toISOString() })).rejects.toThrow('完成时间不能晚于现在')
+  })
+
   it('keeps parent completion independent from child completion', async () => {
     const { tasks } = await fixture()
     const parent = await tasks.create({ title: '实现统计模块', priority: 'medium' })
